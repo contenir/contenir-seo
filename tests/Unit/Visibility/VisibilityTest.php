@@ -46,6 +46,7 @@ final class VisibilityTest extends TestCase
                 true,
             ],
             'automatic, without a site URL'     => [Visibility::Automatic, '', 'staging.example.com', false],
+            'automatic, without a host'         => [Visibility::Automatic, 'https://www.example.com', ' ', false],
             'hide, production'                  => [
                 Visibility::Hide,
                 'https://www.example.com',
