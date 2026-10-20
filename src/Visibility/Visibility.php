@@ -60,15 +60,24 @@ enum Visibility: string
     }
 
     /**
-     * Whether a request to $host is hidden. Automatic can't tell production
-     * from a copy without a site URL, so it shows every host then.
+     * Whether $host is known and isn't the site's. Without a site URL, or
+     * without a host (a console script), Automatic can't tell production
+     * from a copy, so it hides nothing.
+     */
+    private static function elsewhere(SiteUrl $site, string $host): bool
+    {
+        return $site->isSet() && '' !== $host && $host !== $site->host;
+    }
+
+    /**
+     * Whether a request to $host is hidden.
      */
     public function hides(SiteUrl $site, string $host): bool
     {
         return match ($this) {
             self::Hide => true,
             self::Show => false,
-            self::Automatic => $site->isSet() && strtolower(rtrim(trim($host), characters: '.')) !== $site->host,
+            self::Automatic => self::elsewhere($site, strtolower(rtrim(trim($host), characters: '.'))),
         };
     }
 }

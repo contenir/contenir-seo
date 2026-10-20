@@ -100,7 +100,7 @@ A copy is hidden by `extensions.seo.visibility`, kept in each environment's loca
 
 | Value | Hides |
 |---|---|
-| `auto` | every request whose host isn't the site URL's; nothing without a site URL |
+| `auto` | every request whose host isn't the site URL's; nothing without a site URL, or without a host (a console script) |
 | `hide` | everything |
 | `show` | nothing |
 
