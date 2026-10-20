@@ -19,7 +19,7 @@ adheres to [Semantic Versioning](https://semver.org/).
   `/.well-known/` is never blocked.
 - Hiding a copy of the site from search engines (`Visibility\Visibility`, SEO-3): Automatic, the default, hides every
   host that isn't the configured site URL's, so a staging or local copy is hidden without anyone saving anything and
-  production never is by accident.
+  production never is by accident. Without a host to compare, such as in a console script, nothing is hidden.
 - Site verification tokens for Google, Bing, Pinterest and Meta (`Verification\*`). A pasted meta tag is reduced to
   its token.
 - JSON-LD for the home page (`JsonLd\JsonLd`): the site's owner as an Organization or LocalBusiness, with its logo
