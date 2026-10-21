@@ -17,7 +17,7 @@ use const ENT_SUBSTITUTE;
 /**
  * Writes a Head as HTML for any template engine: output it unescaped in
  * <head>. Sites on laminas-view write it through the head helpers instead
- * (contenir/seo-laminas-mvc).
+ * (contenir/contenir-seo-laminas-mvc).
  *
  * @api
  */
