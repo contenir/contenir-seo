@@ -1,4 +1,4 @@
-# contenir/seo
+# contenir/contenir-seo
 
 [![Continuous Integration](https://github.com/contenir/contenir-seo/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/contenir/contenir-seo/actions/workflows/continuous-integration.yml)
 [![codecov](https://codecov.io/gh/contenir/contenir-seo/graph/badge.svg)](https://codecov.io/gh/contenir/contenir-seo)
@@ -15,7 +15,7 @@ Framework-free SEO for [Contenir](https://github.com/contenir) sites:
 
 It has no framework dependency. Sites use it through an adapter, and the CMS through an add-on:
 
-- **Laminas MVC sites:** [contenir/seo-laminas-mvc](https://github.com/contenir/contenir-seo-laminas-mvc) serves
+- **Laminas MVC sites:** [contenir/contenir-seo-laminas-mvc](https://github.com/contenir/contenir-seo-laminas-mvc) serves
   `/sitemap.xml` and `/robots.txt`, and adds an `seo()` view helper for the head. It replaces
   contenir/contenir-sitemap-laminas-mvc.
 - **The CMS:** the [SEO add-on](https://github.com/contenir-extension/seo) (`contenir-extension/seo`) holds the

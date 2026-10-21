@@ -1,5 +1,5 @@
 {
-    "name": "contenir/seo",
+    "name": "contenir/contenir-seo",
     "description": "Framework-free SEO for Contenir: title templates, robots directives and robots.txt, site verification, JSON-LD Organization and WebSite, and an XML sitemap writer with images and an index past 50,000 URLs.",
     "type": "library",
     "license": "BSD-3-Clause",

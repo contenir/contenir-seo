@@ -6,6 +6,11 @@ adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased] - 2026-10-21
 
+### Changed
+
+- The package is named `contenir/contenir-seo`, after its repository, as Contenir's other libraries are. Require it
+  as `contenir/contenir-seo`. Namespaces are unchanged.
+
 ### Added
 
 - `SeoConfig::fromSettings()`, which reads a site's SEO settings under the keys in `SettingKeys`. Values the CMS
