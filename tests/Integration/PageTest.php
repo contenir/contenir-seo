@@ -33,14 +33,14 @@ final class PageTest extends TestCase
     private static function settings(): array
     {
         return SettingsFactory::site([
-            SettingKeys::DESCRIPTION       => 'Handmade furniture from Point Lonsdale.',
-            SettingKeys::SHARE_IMAGE       => '/asset/img/seo/share.jpg',
-            SettingKeys::SHARE_IMAGE_ALT   => 'The workshop',
-            SettingKeys::VERIFY_GOOGLE     => 'g-token',
-            SettingKeys::ORGANISATION_TYPE => 'LocalBusiness',
-            SettingKeys::SITEMAP_EXCLUDE   => 'redirect',
-            SettingKeys::ROBOTS_RULES      => 'Disallow: /search',
-            'social.social_instagram'      => 'example',
+            SettingKeys::DESCRIPTION     => 'Handmade furniture from Point Lonsdale.',
+            SettingKeys::SHARE_IMAGE     => '/asset/img/seo/share.jpg',
+            SettingKeys::SHARE_IMAGE_ALT => 'The workshop',
+            SettingKeys::VERIFY_GOOGLE   => 'g-token',
+            'contact.business.type'      => 'LocalBusiness',
+            SettingKeys::SITEMAP_EXCLUDE => 'redirect',
+            SettingKeys::ROBOTS_RULES    => 'Disallow: /search',
+            'social.social_instagram'    => 'example',
         ]);
     }
 

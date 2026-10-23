@@ -24,8 +24,9 @@ use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
 /**
- * The home page's structured data: the site's owner as an Organization
- * (or LocalBusiness) and the site as a WebSite it publishes, in one graph.
+ * The home page's structured data: the site's owner, as the business type
+ * Office details gives it, at its primary office and with its locations, and
+ * the site as a WebSite it publishes, in one graph.
  *
  * @api
  */
@@ -54,19 +55,7 @@ final readonly class JsonLd
         }
 
         $home         = "{$this->siteUrl}/";
-        $organisation = [
-            '@type' => $this->organisation->type->value,
-            '@id'   => "{$home}#organization",
-            'name'  => '' === $this->organisation->name ? $this->siteName : $this->organisation->name,
-            'url'   => $home,
-        ];
-        if (null !== $this->organisation->logo) {
-            $organisation['logo'] = $this->organisation->logo;
-        }
-
-        if ([] !== $this->organisation->profiles) {
-            $organisation['sameAs'] = $this->organisation->profiles;
-        }
+        $organisation = OrganisationNode::of($this->organisation, $home, $this->siteName);
 
         return [
             '@context' => 'https://schema.org',

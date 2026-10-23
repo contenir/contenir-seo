@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Contenir\Seo;
 
+use Contenir\Contact\ContactSettings;
 use Contenir\Seo\Head\ShareImage;
 use Contenir\Seo\Internal\SettingsArray;
 use Contenir\Seo\Organisation\Organisation;
-use Contenir\Seo\Organisation\OrganisationType;
 use Contenir\Seo\Organisation\SocialProfiles;
 use Contenir\Seo\Robots\RobotsDirective;
 use Contenir\Seo\Robots\RobotsRules;
@@ -121,9 +121,7 @@ final readonly class SeoConfig
             visibility: Visibility::parse($values->text(SettingKeys::VISIBILITY)),
             verification: $verification,
             organisation: new Organisation(
-                trim($values->text(SettingKeys::ORGANISATION_NAME)),
-                OrganisationType::tryFrom($values->text(SettingKeys::ORGANISATION_TYPE))
-                    ?? OrganisationType::Organization,
+                ContactSettings::fromSettings($settings),
                 $site->absolute($values->text(SettingKeys::ORGANISATION_LOGO)),
                 SocialProfiles::fromSettings($settings),
             ),

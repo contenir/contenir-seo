@@ -49,8 +49,16 @@ final class SettingKeys
 
     public const string VERIFY_META = 'extensions.seo.verify_meta';
 
+    /**
+     * @deprecated No longer read: the business's name is Office details' (contact.business.name). Kept for the SEO
+     *             add-on's settings form until it drops the field.
+     */
     public const string ORGANISATION_NAME = 'extensions.seo.organisation_name';
 
+    /**
+     * @deprecated No longer read: the business type is Office details' (contact.business.type). Kept for the SEO
+     *             add-on's settings form until it drops the field.
+     */
     public const string ORGANISATION_TYPE = 'extensions.seo.organisation_type';
 
     public const string ORGANISATION_LOGO = 'extensions.seo.organisation_logo';
