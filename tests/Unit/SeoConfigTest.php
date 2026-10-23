@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Contenir\Seo\Tests\Unit;
 
-use Contenir\Seo\Organisation\OrganisationType;
 use Contenir\Seo\Robots\RobotsDirective;
 use Contenir\Seo\SeoConfig;
 use Contenir\Seo\SettingKeys;
@@ -35,8 +34,8 @@ final class SeoConfigTest extends TestCase
                 RobotsDirective::IndexFollow,
                 Visibility::Automatic,
                 [],
-                '',
-                OrganisationType::Organization,
+                'Example',
+                'Organization',
                 null,
                 [],
                 true,
@@ -55,8 +54,8 @@ final class SeoConfigTest extends TestCase
                 $config->robots,
                 $config->visibility,
                 $config->verification,
-                $config->organisation->name,
-                $config->organisation->type,
+                $config->organisation->business?->name,
+                $config->organisation->business?->type->name,
                 $config->organisation->logo,
                 $config->organisation->profiles,
                 $config->sitemap->enabled,
@@ -174,8 +173,8 @@ final class SeoConfigTest extends TestCase
             SettingKeys::VERIFY_BING       => 'b-token',
             SettingKeys::VERIFY_PINTEREST  => 'p-token',
             SettingKeys::VERIFY_META       => 'm-token',
-            SettingKeys::ORGANISATION_NAME => ' Example Pty Ltd ',
-            SettingKeys::ORGANISATION_TYPE => 'LocalBusiness',
+            'contact.business.name'        => ' Example Pty Ltd ',
+            'contact.business.type'        => 'LocalBusiness',
             SettingKeys::ORGANISATION_LOGO => '/asset/img/seo/logo.png',
             'social.social_twitter'        => '@example',
             SettingKeys::SITEMAP_ENABLED   => '0',
@@ -194,7 +193,7 @@ final class SeoConfigTest extends TestCase
                 RobotsDirective::NoindexFollow,
                 Visibility::Show,
                 ['google' => 'g-token', 'bing' => 'b-token', 'pinterest' => 'p-token', 'meta' => 'm-token'],
-                ['Example Pty Ltd', OrganisationType::LocalBusiness, 'https://www.example.com/asset/img/seo/logo.png'],
+                ['Example Pty Ltd', 'LocalBusiness', 'https://www.example.com/asset/img/seo/logo.png'],
                 ['https://x.com/example'],
                 [false, ['redirect', 'faq']],
                 ['Disallow: /search'],
@@ -214,10 +213,33 @@ final class SeoConfigTest extends TestCase
                 $config->robots,
                 $config->visibility,
                 $config->verification,
-                [$config->organisation->name, $config->organisation->type, $config->organisation->logo],
+                [
+                    $config->organisation->business?->name,
+                    $config->organisation->business?->type->name,
+                    $config->organisation->logo,
+                ],
                 $config->organisation->profiles,
                 [$config->sitemap->enabled, $config->sitemap->excluded],
                 $config->robotsRules->lines,
+            ],
+        );
+    }
+
+    #[Test]
+    public function readsTheBusinessAndItsOfficesFromOfficeDetails(): void
+    {
+        $config = SeoConfig::fromSettings(SettingsFactory::site([
+            'site.locale'           => 'en_AU',
+            'contact.business.type' => 'Dentist',
+            'contact.office'        => [['id' => 'a', 'name' => 'Fitzroy', 'locality' => 'Fitzroy North']],
+        ]));
+
+        static::assertSame(
+            ['Dentist', 'a', 'AU'],
+            [
+                $config->organisation->business?->type->name,
+                $config->organisation->business?->offices->primary()?->id,
+                $config->organisation->business?->country,
             ],
         );
     }
@@ -264,6 +286,20 @@ final class SeoConfigTest extends TestCase
                 $sized->robotsRules,
                 $sized->problems,
             ],
+        );
+    }
+
+    #[Test]
+    public function theSeoAddOnsOldNameAndTypeAreNotRead(): void
+    {
+        $config = SeoConfig::fromSettings(SettingsFactory::site([
+            SettingKeys::ORGANISATION_NAME => 'Old Name Pty Ltd',
+            SettingKeys::ORGANISATION_TYPE => 'LocalBusiness',
+        ]));
+
+        static::assertSame(
+            ['Example', 'Organization'],
+            [$config->organisation->business?->name, $config->organisation->business?->type->name],
         );
     }
 

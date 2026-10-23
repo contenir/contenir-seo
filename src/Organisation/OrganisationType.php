@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Contenir\Seo\Organisation;
 
 /**
- * The schema.org type the site's owner is described as.
+ * The schema.org type the site's owner was described as.
+ *
+ * @deprecated The business type is Office details' now, read through contenir/contenir-contact's BusinessType;
+ *             this is kept for the SEO add-on's settings form until it drops the field.
  *
  * @api
  */

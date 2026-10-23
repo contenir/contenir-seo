@@ -11,8 +11,18 @@ adheres to [Semantic Versioning](https://semver.org/).
 - The package is named `contenir/contenir-seo`, after its repository, as Contenir's other libraries are. Require it
   as `contenir/contenir-seo`. Namespaces are unchanged.
 
+### Deprecated
+
+- `SettingKeys::ORGANISATION_NAME`, `SettingKeys::ORGANISATION_TYPE` and `OrganisationType`: no longer read; the
+  business's name and type are Office details'. They stay for the SEO add-on's settings form until it drops them.
+
 ### Added
 
+- The home page's JSON-LD describes the business from Office details, read by contenir/contenir-contact: its
+  business type and additional types, legal name and ABN, and, at its primary office, its address, telephone, email,
+  ContactPoint, position, opening hours and type-specific values, as far as its type takes them. With more than one
+  office shown to search engines, each is listed under `location` with an `@id` of its own. `Organisation` now holds
+  the `Business` with the logo and profiles.
 - `SeoConfig::fromSettings()`, which reads a site's SEO settings under the keys in `SettingKeys`. Values the CMS
   already had keep their keys (`site.title`, `site.url`, `site.sitemap.enabled`, `google.site_verification`); the
   rest sit under `extensions.seo`. `SeoConfig::fromCoreSettings()` reads only the core keys, for sites without the

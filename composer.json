@@ -18,7 +18,8 @@
     },
     "require": {
         "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
-        "ext-xmlwriter": "*"
+        "ext-xmlwriter": "*",
+        "contenir/contenir-contact": "^0.1"
     },
     "require-dev": {
         "contenir/contenir-qa-tools": "0.1.x-dev",
@@ -72,5 +73,11 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../contenir-contact"
+        }
+    ]
 }

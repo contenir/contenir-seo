@@ -4,8 +4,95 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a7dcfaaa1d9208bddb3441dd98930899",
-    "packages": [],
+    "content-hash": "aca4428dc8bbfac093fd53a3de899328",
+    "packages": [
+        {
+            "name": "contenir/contenir-contact",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../contenir-contact",
+                "reference": "cba93fc1a4419273e802f0ebe54558ed0b038374"
+            },
+            "require": {
+                "php": "~8.3.0 || ~8.4.0 || ~8.5.0"
+            },
+            "require-dev": {
+                "contenir/contenir-qa-tools": "0.1.x-dev",
+                "infection/infection": "^0.34.1",
+                "phpunit/phpunit": "^11.5.42"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "0.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Contenir\\Contact\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Contenir\\Contact\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "check": [
+                    "@cs-check",
+                    "@static-analysis",
+                    "@test",
+                    "@test-integration",
+                    "@mutation-test"
+                ],
+                "cs-check": [
+                    "mago format --check",
+                    "mago lint"
+                ],
+                "cs-fix": [
+                    "mago format",
+                    "mago lint --fix"
+                ],
+                "static-analysis": [
+                    "mago analyze"
+                ],
+                "test": [
+                    "phpunit --colors=always --testsuite unit"
+                ],
+                "test-integration": [
+                    "phpunit --colors=always --testsuite integration"
+                ],
+                "test-coverage": [
+                    "phpunit --colors=always --coverage-clover clover.xml"
+                ],
+                "mutation-test": [
+                    "infection"
+                ]
+            },
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Framework-free contact details for Contenir: the business and its offices, with addresses, telephones, opening hours, geolocation and business types, overrides per office, and formats for showing them.",
+            "homepage": "https://contenir.com.au",
+            "keywords": [
+                "address",
+                "business",
+                "contact",
+                "contenir",
+                "office",
+                "opening-hours",
+                "schema.org"
+            ],
+            "support": {
+                "issues": "https://github.com/contenir/contenir-contact/issues",
+                "source": "https://github.com/contenir/contenir-contact"
+            },
+            "transport-options": {
+                "relative": true
+            }
+        }
+    ],
     "packages-dev": [
         {
             "name": "colinodell/json5",
@@ -4302,9 +4389,9 @@
         "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
         "ext-xmlwriter": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "8.3.99"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

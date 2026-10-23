@@ -8,7 +8,8 @@ Framework-free SEO for [Contenir](https://github.com/contenir) sites:
 - page titles from a template, so sites stop hard-coding " | Site";
 - the default description and share image, `og:site_name` and a robots meta tag;
 - site verification for Google, Bing, Pinterest and Meta;
-- JSON-LD Organization and WebSite on the home page;
+- JSON-LD on the home page: the business, from Office details, at its primary office and with its locations, and the
+  WebSite;
 - robots.txt from settings, with extra rules;
 - an XML sitemap with images, which becomes an index past 50,000 URLs;
 - hiding staging and local copies of a site from search engines.
@@ -45,9 +46,8 @@ these keys (`SettingKeys`). Values the CMS already had keep their keys, so movin
 | `extensions.seo.visibility` | `auto`, `hide` or `show`; kept in local settings | `auto` |
 | `google.site_verification` | Google Search Console's token | none |
 | `extensions.seo.verify_bing`, `verify_pinterest`, `verify_meta` | The other services' tokens | none |
-| `extensions.seo.organisation_name` | The site's owner | the site's name |
-| `extensions.seo.organisation_type` | `Organization` or `LocalBusiness` | `Organization` |
-| `extensions.seo.organisation_logo` | Its logo | none |
+| `contact.business.*`, `contact.office` | The business and its offices, from Office details, read by [contenir/contenir-contact](https://github.com/contenir/contenir-contact): name, legal name, ABN, business type and additional types, telephone, email, hours, and each office's address and position | the site's name, an `Organization` |
+| `extensions.seo.organisation_logo` | The business's logo | none |
 | `social.social_*` | Profile URLs, the Social add-on's keys (`facebook`, `instagram`, `linkedin`, `twitter`, `youtube`, `tiktok`, `pinterest`, `threads`, `bluesky`, `mastodon`) | none |
 | `site.sitemap.enabled` | Whether the site publishes a sitemap | on |
 | `extensions.seo.sitemap_exclude` | Workflows to leave out of the sitemap (`redirect, faq`) | none |
@@ -89,10 +89,26 @@ echo (new HtmlRenderer())->render($head, $nonce);
 | `google-site-verification`, `msvalidate.01`, `p:domain_verify`, `facebook-domain-verification` | on the home page, for each token set |
 | `description`, `og:description`, `twitter:description` | the page has no description of its own |
 | `og:image`, `og:image:width`, `og:image:height`, `og:image:alt`, `twitter:card` (`summary_large_image`), `twitter:image`, `twitter:image:alt` | the page has no image of its own; the size when the site measured it (`SeoConfig::withShareImage()`) |
-| JSON-LD Organization and WebSite | on the home page, when the site URL is set |
+| JSON-LD for the business and the WebSite | on the home page, when the site URL is set |
 
 Every value is plain text, and `HtmlRenderer` escapes it. The JSON-LD can't close its own script element: `<`, `>`,
 `&` and quotes are escaped as JSON.
+
+## The business in JSON-LD
+
+The home page describes the business as its business type, with its additional types, legal name, ABN, logo and
+social profiles. Its primary office is where it is: that office's address, telephone, email (and a ContactPoint for
+them), position, opening hours and type-specific values, such as a price range or cuisine, are the business's own,
+as far as the business's type takes them. A plain `Organization` has no position or opening hours; a `LocalBusiness`
+and its subtypes do. A business without offices has its own telephone, email and hours, and no address.
+
+With more than one office shown to search engines, every one of them, the primary office included, is also listed
+under `location` as a Place with its own address, telephone, position and hours, and an `@id` of
+`https://www.example.com/#office-{id}`. An office whose "Show to search engines" is off is left out; one office
+shown is no list.
+
+`extensions.seo.organisation_name` and `extensions.seo.organisation_type` are no longer read, and are deprecated
+along with `OrganisationType`: the name and type are Office details' now.
 
 ## Hiding a copy of the site
 
