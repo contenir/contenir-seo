@@ -4,15 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aca4428dc8bbfac093fd53a3de899328",
+    "content-hash": "199ebfb9573ab725db124ef0d8ff980c",
     "packages": [
         {
             "name": "contenir/contenir-contact",
             "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "../contenir-contact",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/contenir/contenir-contact.git",
                 "reference": "cba93fc1a4419273e802f0ebe54558ed0b038374"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/contenir/contenir-contact/zipball/cba93fc1a4419273e802f0ebe54558ed0b038374",
+                "reference": "cba93fc1a4419273e802f0ebe54558ed0b038374",
+                "shasum": ""
             },
             "require": {
                 "php": "~8.3.0 || ~8.4.0 || ~8.5.0"
@@ -22,6 +28,7 @@
                 "infection/infection": "^0.34.1",
                 "phpunit/phpunit": "^11.5.42"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -88,9 +95,7 @@
                 "issues": "https://github.com/contenir/contenir-contact/issues",
                 "source": "https://github.com/contenir/contenir-contact"
             },
-            "transport-options": {
-                "relative": true
-            }
+            "time": "2026-10-23T02:26:21+00:00"
         }
     ],
     "packages-dev": [

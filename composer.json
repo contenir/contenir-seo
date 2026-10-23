@@ -76,8 +76,8 @@
     "prefer-stable": true,
     "repositories": [
         {
-            "type": "path",
-            "url": "../contenir-contact"
+            "type": "vcs",
+            "url": "https://github.com/contenir/contenir-contact"
         }
     ]
 }
