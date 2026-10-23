@@ -4,12 +4,15 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased] - 2026-10-21
+## [Unreleased]
+
+## [0.2.0] - 2026-10-23
 
 ### Changed
 
-- The package is named `contenir/contenir-seo`, after its repository, as Contenir's other libraries are. Require it
-  as `contenir/contenir-seo`. Namespaces are unchanged.
+- `Organisation` holds the `Business` from Office details, read by contenir/contenir-contact, with the logo and
+  profiles, in place of its `name` and `type`. Code that built an `Organisation` passes a `Business`, or null.
+  contenir/contenir-contact `^0.1` is required.
 
 ### Deprecated
 
@@ -18,11 +21,20 @@ adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- The home page's JSON-LD describes the business from Office details, read by contenir/contenir-contact: its
-  business type and additional types, legal name and ABN, and, at its primary office, its address, telephone, email,
-  ContactPoint, position, opening hours and type-specific values, as far as its type takes them. With more than one
-  office shown to search engines, each is listed under `location` with an `@id` of its own. `Organisation` now holds
-  the `Business` with the logo and profiles.
+- The home page's JSON-LD describes the business from Office details: its business type and additional types, legal
+  name and ABN, and, at its primary office, its address, telephone, email, ContactPoint, position, opening hours and
+  type-specific values, as far as its type takes them. With more than one office shown to search engines, each is
+  listed under `location` with an `@id` of its own.
+
+## [0.1.0] - 2026-10-21
+
+### Changed
+
+- The package is named `contenir/contenir-seo`, after its repository, as Contenir's other libraries are. Require it
+  as `contenir/contenir-seo`. Namespaces are unchanged.
+
+### Added
+
 - `SeoConfig::fromSettings()`, which reads a site's SEO settings under the keys in `SettingKeys`. Values the CMS
   already had keep their keys (`site.title`, `site.url`, `site.sitemap.enabled`, `google.site_verification`); the
   rest sit under `extensions.seo`. `SeoConfig::fromCoreSettings()` reads only the core keys, for sites without the
