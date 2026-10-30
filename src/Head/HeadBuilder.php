@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Contenir\Seo\Head;
 
-use Contenir\Seo\JsonLd\JsonLd;
+use Contenir\Seo\JsonLd\PageNodes;
 use Contenir\Seo\Robots\RobotsDirective;
 use Contenir\Seo\SeoConfig;
 use Contenir\Seo\Verification\Verifier;
@@ -16,7 +16,8 @@ use Contenir\Seo\Verification\Verifier;
  * - og:site_name;
  * - a robots meta tag, when this copy is hidden or the site's default
  *   isn't to index and follow;
- * - on the home page, the verification tags and the JSON-LD graph;
+ * - on the home page, the verification tags and the site's JSON-LD;
+ * - on other pages, the JSON-LD for an article and the breadcrumb trail;
  * - the default description and share image, for a page without its own.
  *
  * @api
@@ -58,7 +59,7 @@ final readonly class HeadBuilder
         return new Head(
             $page->home ? $config->title->home($page->title) : $config->title->format($page->title),
             $tags,
-            $page->home ? new JsonLd($config->site->origin, $config->siteName(), $config->organisation) : null,
+            PageNodes::of($config, $page),
             $hidden,
         );
     }

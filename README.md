@@ -62,9 +62,11 @@ it when the SEO add-on isn't enabled, so a site keeps today's sitemap and robots
 ## The head
 
 ```php
+use Contenir\Seo\Head\Article;
 use Contenir\Seo\Head\HeadBuilder;
 use Contenir\Seo\Head\HtmlRenderer;
 use Contenir\Seo\Head\PageContext;
+use Contenir\Seo\JsonLd\Graph;
 use Contenir\Seo\SeoConfig;
 
 $config = SeoConfig::fromSettings($settings);
@@ -74,9 +76,23 @@ $head   = (new HeadBuilder($config))->build(new PageContext(
     host: $request->getHost(),
     hasDescription: $pageHasDescription,
     hasImage: $pageHasImage,
+    path: $request->getPath(),        // for the breadcrumb trail
+    article: $isArticle ? new Article($canonicalUrl, $page->title, published: $page->published) : null,
 ));
 
 echo (new HtmlRenderer())->render($head, $nonce);
+```
+
+A template that gathers JSON-LD from elsewhere too writes the tags with `HtmlRenderer::tags($head)` and adds the
+head's nodes to its `Graph`, which writes every node once, in one script element:
+
+```php
+$graph = new Graph();
+$graph->append(...$head->jsonLd);
+$graph->append(['@type' => 'CreativeWork', 'name' => $project->title]);
+
+echo (new HtmlRenderer())->tags($head);
+echo $graph->script($nonce);
 ```
 
 `HeadBuilder` adds, in this order:
@@ -90,6 +106,8 @@ echo (new HtmlRenderer())->render($head, $nonce);
 | `description`, `og:description`, `twitter:description` | the page has no description of its own |
 | `og:image`, `og:image:width`, `og:image:height`, `og:image:alt`, `twitter:card` (`summary_large_image`), `twitter:image`, `twitter:image:alt` | the page has no image of its own; the size when the site measured it (`SeoConfig::withShareImage()`) |
 | JSON-LD for the business and the WebSite | on the home page, when the site URL is set |
+| JSON-LD Article | another page that is an article (`article`), when the site URL is set |
+| JSON-LD BreadcrumbList | another page with a path, when the site URL is set: a step for each segment, named from it ("our-work" is "Our work"), the last from the page's title |
 
 Every value is plain text, and `HtmlRenderer` escapes it. The JSON-LD can't close its own script element: `<`, `>`,
 `&` and quotes are escaped as JSON.
