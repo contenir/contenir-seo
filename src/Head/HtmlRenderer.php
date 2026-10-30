@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Contenir\Seo\Head;
 
+use Contenir\Seo\JsonLd\Graph;
 use JsonException;
 
+use function array_filter;
 use function htmlspecialchars;
 use function implode;
 use function sprintf;
@@ -32,9 +34,24 @@ final class HtmlRenderer
      * The <title> (when there is one), the meta tags, then the JSON-LD
      * script with $nonce.
      *
-     * @throws JsonException Never in practice; see JsonLd::script().
+     * @throws JsonException Never in practice; see Graph::script().
      */
     public function render(Head $head, ?string $nonce = null): string
+    {
+        $script = (new Graph())->append(...$head->jsonLd)
+            ->script($nonce);
+
+        return implode("\n", array_filter(
+            [$this->tags($head), $script],
+            static fn(string $part): bool => '' !== $part,
+        ));
+    }
+
+    /**
+     * The <title> (when there is one) and the meta tags, for a template that
+     * gathers the JSON-LD in a Graph of its own.
+     */
+    public function tags(Head $head): string
     {
         $lines = '' === $head->title ? [] : [sprintf('<title>%s</title>', self::escape($head->title))];
         foreach ($head->tags as $tag) {
@@ -44,11 +61,6 @@ final class HtmlRenderer
                 self::escape($tag->key),
                 self::escape($tag->content),
             );
-        }
-
-        $script = $head->jsonLd?->script($nonce) ?? '';
-        if ('' !== $script) {
-            $lines[] = $script;
         }
 
         return implode("\n", $lines);

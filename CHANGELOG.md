@@ -6,6 +6,23 @@ adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-30
+
+### Added
+
+- `JsonLd\Graph`: a page's structured data gathered as `headMeta()` gathers its tags. The SEO head, other packages
+  and the page's template append nodes; the layout writes them once, as one graph in one script element.
+- JSON-LD on pages other than the home page: an `Article` (give `PageContext` an `Article`) published by the site's
+  owner, and a `BreadcrumbList` from the page's `path`, each step named from its segment and the last from the
+  page's title.
+- `HtmlRenderer::tags()`: the title and meta tags without the script, for a template that writes its own `Graph`.
+- `JsonLd::nodes()`: the home page's nodes, for a `Graph`.
+
+### Changed
+
+- `Head::$jsonLd` is the page's list of JSON-LD nodes, in place of a `JsonLd` or null. `HtmlRenderer::render()`
+  writes them as before.
+
 ## [0.2.0] - 2026-10-23
 
 ### Changed

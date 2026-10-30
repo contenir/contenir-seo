@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Contenir\Seo\Tests\Unit\Head;
 
+use Contenir\Seo\Head\Article;
 use Contenir\Seo\Head\HeadBuilder;
 use Contenir\Seo\Head\MetaTag;
 use Contenir\Seo\Head\PageContext;
@@ -14,6 +15,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+use function array_column;
 use function array_map;
 
 #[Group('unit')]
@@ -95,17 +97,63 @@ final class HeadBuilderTest extends TestCase
                 'https://www.example.com/#website',
                 ['property og:site_name=Example'],
                 'Home | Example',
-                null,
+                [],
             ],
             [
                 self::lines($home->tags),
                 $home->title,
-                $home->jsonLd?->graph()['@graph'][1]['@id'] ?? null,
+                $home->jsonLd[1]['@id'] ?? null,
                 self::lines($other->tags),
                 $other->title,
                 $other->jsonLd,
             ],
         );
+    }
+
+    #[Test]
+    public function aPageThatIsNoArticleHasOnlyItsTrail(): void
+    {
+        $head = self::builder()->build(new PageContext('About', host: 'www.example.com', path: '/about'));
+
+        static::assertSame(['BreadcrumbList'], array_column($head->jsonLd, '@type'));
+    }
+
+    #[Test]
+    public function describesAnArticleAndItsTrailOnAnotherPage(): void
+    {
+        $head = self::builder()
+            ->build(new PageContext(
+                'A project',
+                host: 'www.example.com',
+                path: '/work/a-project',
+                article: new Article('https://www.example.com/work/a-project', 'A project'),
+            ));
+
+        static::assertSame(
+            [
+                ['Article',        'A project'],
+                ['BreadcrumbList', 'https://www.example.com/work'],
+            ],
+            [
+                [$head->jsonLd[0]['@type'] ?? null, $head->jsonLd[0]['headline'] ?? null],
+                [$head->jsonLd[1]['@type'] ?? null, $head->jsonLd[1]['itemListElement'][1]['item'] ?? null],
+            ],
+        );
+    }
+
+    #[Test]
+    public function hasNoPageStructuredDataWithoutASiteUrl(): void
+    {
+        $head = (new HeadBuilder(SeoConfig::fromSettings(SettingsFactory::make([
+            SettingKeys::SITE_TITLE => 'Example',
+        ]))))
+            ->build(new PageContext(
+                'A project',
+                path: '/work/a-project',
+                article: new Article('/work/a-project', 'A project'),
+            ));
+
+        static::assertSame([], $head->jsonLd);
     }
 
     #[Test]

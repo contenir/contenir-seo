@@ -30,7 +30,7 @@ final class HtmlRendererTest extends TestCase
     #[Test]
     public function writesNoScriptWhenTheGraphIsEmpty(): void
     {
-        $head = new Head('Home', jsonLd: new JsonLd('', 'Example', new Organisation()));
+        $head = new Head('Home', jsonLd: (new JsonLd('', 'Example', new Organisation()))->nodes());
 
         static::assertSame('<title>Home</title>', (new HtmlRenderer())->render($head));
     }
@@ -40,7 +40,7 @@ final class HtmlRendererTest extends TestCase
     {
         $head = new Head('');
 
-        static::assertSame(['', [], null, false], [
+        static::assertSame(['', [], [], false], [
             (new HtmlRenderer())->render($head),
             $head->tags,
             $head->jsonLd,
@@ -49,12 +49,27 @@ final class HtmlRendererTest extends TestCase
     }
 
     #[Test]
+    public function writesTheTagsWithoutTheScriptForATemplateThatGathersItsOwnGraph(): void
+    {
+        $head = new Head(
+            'About',
+            [MetaTag::property('og:site_name', 'Example')],
+            (new JsonLd('https://www.example.com', 'Example', new Organisation()))->nodes(),
+        );
+
+        static::assertSame(
+            "<title>About</title>\n<meta property=\"og:site_name\" content=\"Example\">",
+            (new HtmlRenderer())->tags($head),
+        );
+    }
+
+    #[Test]
     public function writesTheTitleTagsAndScriptEscaped(): void
     {
         $head = new Head(
             'Fish & "Chips"',
             [MetaTag::property('og:site_name', 'Fish & Chips'), MetaTag::name('robots', '<noindex>')],
-            new JsonLd('https://www.example.com', 'Example', new Organisation()),
+            (new JsonLd('https://www.example.com', 'Example', new Organisation()))->nodes(),
         );
 
         static::assertSame(
