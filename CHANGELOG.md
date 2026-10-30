@@ -6,6 +6,8 @@ adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-30
+
 ### Added
 
 - `JsonLd\Graph`: a page's structured data gathered as `headMeta()` gathers its tags. The SEO head, other packages
