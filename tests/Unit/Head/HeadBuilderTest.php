@@ -182,6 +182,29 @@ final class HeadBuilderTest extends TestCase
     }
 
     #[Test]
+    public function namesTheTrailFromTheSitesPages(): void
+    {
+        $head = self::builder()
+            ->build(new PageContext(
+                'A House',
+                host: 'www.example.com',
+                path: '/project/a-house',
+                pages: ['/work' => 'Our work'],
+            ));
+
+        static::assertSame(
+            [
+                ['Example', 'https://www.example.com/'],
+                ['A House', 'https://www.example.com/project/a-house'],
+            ],
+            array_map(
+                static fn(array $step): array => [$step['name'], $step['item']],
+                $head->jsonLd[0]['itemListElement'] ?? [],
+            ),
+        );
+    }
+
+    #[Test]
     public function writesNoSiteNameForASiteWithout(): void
     {
         $head = (new HeadBuilder(new SeoConfig()))->build(new PageContext('About'));

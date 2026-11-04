@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.7.0] - 2026-11-05
+
+### Added
+
+- `Head\PageContext::$pages`: the site's pages' names by path. Given them, a page's breadcrumb trail names each
+  step as the site does, and leaves out a step that is no page of the site, as `/project` is where projects at
+  `/project/a-house` have no index. Without them, each step is named from its path, as before.
+
 ## [0.6.0] - 2026-11-04
 
 ### Added
