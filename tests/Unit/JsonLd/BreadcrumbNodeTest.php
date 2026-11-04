@@ -30,6 +30,35 @@ final class BreadcrumbNodeTest extends TestCase
     /**
      * @return array<string, array{string, ?string, list<array{string, string}>}>
      */
+    public static function namedTrailProvider(): array
+    {
+        return [
+            'a page under a named one'           => [
+                '/work/a-house',
+                'A House',
+                [['Example', self::HOME], ['Our work', self::HOME . 'work'], ['A House', self::HOME . 'work/a-house']],
+            ],
+            'a page under no page'               => [
+                '/project/a-house',
+                'A House',
+                [['Example', self::HOME], ['A House', self::HOME . 'project/a-house']],
+            ],
+            'a named page without its own title' => [
+                '/work',
+                null,
+                [['Example', self::HOME], ['Our work', self::HOME . 'work']],
+            ],
+            'an unnamed page without a title'    => [
+                '/project/a-house',
+                null,
+                [['Example', self::HOME], ['A house', self::HOME . 'project/a-house']],
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, ?string, list<array{string, string}>}>
+     */
     public static function trailProvider(): array
     {
         return [
@@ -84,6 +113,27 @@ final class BreadcrumbNodeTest extends TestCase
         static::assertSame(
             ['@type' => 'BreadcrumbList', 'itemListElement' => $expected],
             BreadcrumbNode::of(self::HOME, 'Example', $path, $title),
+        );
+    }
+
+    /**
+     * @param list<array{string, string}> $steps
+     */
+    #[Test]
+    #[DataProvider('namedTrailProvider')]
+    public function stepsTakeTheSitesNamesForItsPagesAndLeaveOutWhatIsNoPage(
+        string $path,
+        ?string $title,
+        array $steps,
+    ): void {
+        $expected = [];
+        foreach ($steps as $index => [$name, $item]) {
+            $expected[] = ['@type' => 'ListItem', 'position' => $index + 1, 'name' => $name, 'item' => $item];
+        }
+
+        static::assertSame(
+            ['@type' => 'BreadcrumbList', 'itemListElement' => $expected],
+            BreadcrumbNode::of(self::HOME, 'Example', $path, $title, ['/work' => 'Our work', '/about' => 'About']),
         );
     }
 

@@ -33,7 +33,7 @@ final class PageNodes
         $nodes = null === $page->article
             ? []
             : [ArticleNode::of($page->article, $config->organisation, $home, $config->siteName())];
-        $trail = BreadcrumbNode::of($home, $config->siteName(), $page->path, $page->title);
+        $trail = BreadcrumbNode::of($home, $config->siteName(), $page->path, $page->title, $page->pages);
 
         return [] === $trail ? $nodes : [...$nodes, $trail];
     }

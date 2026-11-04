@@ -15,6 +15,9 @@ namespace Contenir\Seo\Head;
 final readonly class PageContext
 {
     /**
+     * @param ?array<string, string> $pages The site's pages' names by path, for the breadcrumb trail;
+     *                                      without them each step is named from its path
+     *
      * @mago-expect lint:excessive-parameter-list One parameter per fact about the page, given by name.
      */
     public function __construct(
@@ -25,5 +28,6 @@ final readonly class PageContext
         public bool $hasImage = false,
         public string $path = '',
         public ?Article $article = null,
+        public ?array $pages = null,
     ) {}
 }
