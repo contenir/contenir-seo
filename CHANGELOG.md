@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.6.0] - 2026-11-04
+
+### Added
+
+- A page's main JSON-LD node takes any schema.org type its `Head\Article` names. Article, NewsArticle and
+  BlogPosting are described as before; any other type, such as WebPage or CreativeWork, by its name, the dates it
+  was created and modified, and the website it is part of, with the site's owner as its publisher.
+
 ## [0.5.0] - 2026-11-04
 
 ### Added
