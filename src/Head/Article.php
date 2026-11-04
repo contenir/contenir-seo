@@ -16,7 +16,7 @@ final readonly class Article
     /**
      * @param string $url      The page's canonical address
      * @param string $headline The page's own title
-     * @param string $type     The schema.org type: Article, NewsArticle or BlogPosting
+     * @param string $type     The page's schema.org type: Article, NewsArticle or BlogPosting, or another such as WebPage or CreativeWork
      *
      * @mago-expect lint:excessive-parameter-list One parameter per property the article's JSON-LD takes.
      */
