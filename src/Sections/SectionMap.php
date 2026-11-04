@@ -6,7 +6,6 @@ namespace Contenir\Seo\Sections;
 
 use DOMDocument;
 use DOMElement;
-use DOMNode;
 use DOMNodeList;
 use DOMXPath;
 
@@ -50,15 +49,11 @@ final readonly class SectionMap
             return new self(problems: ['The admin.xml could not be read']);
         }
 
-        /** @var DOMNodeList<DOMNode>|false $found */
+        /** @var DOMNodeList<DOMElement>|false $found The path matches only elements */
         $found    = (new DOMXPath($document))->query(self::BLOCKS);
         $blocks   = [];
         $problems = [];
         foreach (false === $found ? [] : $found as $seo) {
-            if (! $seo instanceof DOMElement) {
-                continue;
-            }
-
             $block   = SeoBlockReader::read($seo);
             $section = self::path($seo);
             if (null === $block) {
