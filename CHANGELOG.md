@@ -4,7 +4,23 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.4.0] - 2026-11-04
+
+### Added
+
+- `Sections\SectionMap::fromAdminXml()`: the `<seo type="…">` blocks a site's admin.xml declares inside its
+  sections' `<extensions>`, by the record type each names. A block without a type, or a second for a type already
+  mapped, is left out and named in `problems`; a file that can't be read maps nothing.
+- `Sections\SeoBlock`: the columns each SEO role reads, first non-empty value winning, with the conventions for a
+  role a block leaves out (meta_title then title, meta_description then description, the title as the image's alt
+  text), the roles a record must fill and the column holding a record's own overrides. `page()` makes a
+  `Sections\MappedPage` of a record's row; `columns()` lists everything the block reads.
+- `Sections\Overrides`: a record's canonical address, robots directive and schema type from its advanced column's
+  JSON.
+
+### Changed
+
+- Requires `ext-dom`.
 
 ## [0.3.0] - 2026-10-30
 
