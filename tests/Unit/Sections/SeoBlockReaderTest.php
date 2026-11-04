@@ -80,12 +80,15 @@ final class SeoBlockReaderTest extends TestCase
     #[Test]
     public function readsTheSchemaAndTheAdvancedColumn(): void
     {
-        $block = self::read('<seo type="project" schema=" CreativeWork "><advanced> seo, other </advanced></seo>');
+        $block = self::read(
+            '<seo type="project" schema=" CreativeWork "><advanced> seo, other </advanced><title>name</title></seo>',
+        );
 
-        static::assertSame(['CreativeWork', 'seo', false], [
+        static::assertSame(['CreativeWork', 'seo', ['name'], false], [
             $block?->schema,
             $block?->advanced,
-            array_key_exists('advanced', $block?->roles ?? []),
+            $block?->roles['title'] ?? null,
+            array_key_exists('advanced', $block->roles ?? []),
         ]);
     }
 

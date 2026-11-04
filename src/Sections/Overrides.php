@@ -28,13 +28,9 @@ final class Overrides
     public static function from(mixed $json): array
     {
         /** @var mixed $decoded */
-        $decoded = is_string($json) ? json_decode($json, associative: true) : null;
-        if (! is_array($decoded)) {
-            return [];
-        }
-
+        $decoded   = is_string($json) ? json_decode($json, associative: true) : null;
         $overrides = [];
-        foreach (self::NAMES as $name) {
+        foreach (is_array($decoded) ? self::NAMES : [] as $name) {
             /** @var mixed $value */
             $value = $decoded[$name] ?? null;
             if (is_string($value) && '' !== trim($value)) {
