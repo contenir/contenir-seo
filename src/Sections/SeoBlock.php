@@ -73,6 +73,12 @@ final readonly class SeoBlock
             canonical: $advanced['canonical'] ?? null,
             robots: $advanced['robots'] ?? null,
             schema: $advanced['schema'] ?? $this->schema,
+            overrides: new RecordOverrides(
+                $advanced['title'] ?? null,
+                $advanced['description'] ?? null,
+                $advanced['image'] ?? null,
+                $advanced['image_alt'] ?? null,
+            ),
         );
     }
 

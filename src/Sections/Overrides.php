@@ -11,13 +11,14 @@ use function trim;
 
 /**
  * A record's own overrides, as its block's advanced column holds them: a
- * JSON object whose canonical, robots and schema are each a string.
+ * JSON object whose canonical, robots, schema, title, description, image
+ * and image_alt are each a string.
  *
  * @api
  */
 final class Overrides
 {
-    private const array NAMES = ['canonical', 'robots', 'schema'];
+    private const array NAMES = ['canonical', 'robots', 'schema', 'title', 'description', 'image', 'image_alt'];
 
     /**
      * Each override $json gives that is a string with something in it, trimmed,
