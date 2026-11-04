@@ -18,6 +18,7 @@
     },
     "require": {
         "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
+        "ext-dom": "*",
         "ext-xmlwriter": "*",
         "contenir/contenir-contact": "^0.1"
     },
