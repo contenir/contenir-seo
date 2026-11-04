@@ -43,9 +43,10 @@ final class OverridesTest extends TestCase
     public function keepsOnlyTheKnownOverridesThatHoldText(): void
     {
         static::assertSame(
-            ['canonical' => '/work/house', 'schema' => 'CreativeWork'],
+            ['canonical' => '/work/house', 'schema' => 'CreativeWork', 'title' => 'T', 'image_alt' => 'Alt'],
             Overrides::from(
-                '{"canonical": " /work/house ", "robots": " ", "schema": "CreativeWork", "title": "T", "image": 3}',
+                '{"canonical": " /work/house ", "robots": " ", "schema": "CreativeWork", "title": "T", "image": 3,'
+                    . ' "image_alt": "Alt", "unknown": "U"}',
             ),
         );
     }

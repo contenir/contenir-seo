@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.5.0] - 2026-11-04
+
+### Added
+
+- `Sections\RecordOverrides`: a record's own share title, description, image and alt text, from its advanced
+  column's `title`, `description`, `image` and `image_alt`. `MappedPage` carries them as `overrides`; each wins over
+  what the page would otherwise show.
+
 ## [0.4.0] - 2026-11-04
 
 ### Added

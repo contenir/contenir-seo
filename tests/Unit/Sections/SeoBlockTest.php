@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Contenir\Seo\Tests\Unit\Sections;
 
 use Contenir\Seo\Sections\MappedPage;
+use Contenir\Seo\Sections\RecordOverrides;
 use Contenir\Seo\Sections\SeoBlock;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -46,6 +47,22 @@ final class SeoBlockTest extends TestCase
             $page->robots,
             $page->schema,
         ]);
+    }
+
+    #[Test]
+    public function aRecordsShareValuesComeFromItsAdvancedColumn(): void
+    {
+        $page = (new SeoBlock('project', advanced: 'seo'))->page([
+            'seo' => '{"title": "Share", "description": "Shared.", "image": "/share.jpg", "image_alt": "Alt"}',
+        ]);
+
+        static::assertEquals(new RecordOverrides('Share', 'Shared.', '/share.jpg', 'Alt'), $page->overrides);
+    }
+
+    #[Test]
+    public function aRecordWithoutAnAdvancedColumnHasNoOverrides(): void
+    {
+        static::assertEquals(new RecordOverrides(), (new SeoBlock('project'))->page(['title' => 'House'])->overrides);
     }
 
     #[Test]

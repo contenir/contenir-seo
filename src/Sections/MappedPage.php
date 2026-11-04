@@ -6,7 +6,8 @@ namespace Contenir\Seo\Sections;
 
 /**
  * What a record's <seo> block makes of its row: each role's first value
- * that isn't empty, and the per-record overrides its advanced column holds.
+ * that isn't empty, and the per-record overrides its advanced column holds,
+ * which win over the page's own values.
  * Every value is optional.
  *
  * @api
@@ -28,5 +29,6 @@ final readonly class MappedPage
         public ?string $canonical = null,
         public ?string $robots = null,
         public ?string $schema = null,
+        public RecordOverrides $overrides = new RecordOverrides(),
     ) {}
 }
