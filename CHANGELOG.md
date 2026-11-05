@@ -4,6 +4,15 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.8.0] - 2026-11-06
+
+### Added
+
+- `SeoConfig::$records`, the master switch for what a site's `<seo>` blocks drive (page defaults, per-record
+  overrides, the main JSON-LD node, breadcrumb names and sitemap images). It is read from `extensions.seo.records`
+  (`SettingKeys::RECORDS`), through the new `$records` argument of `fromSettings()` and `fromCoreSettings()` where the
+  settings don't have it, and is off unless a site turns it on.
+
 ## [0.7.1] - 2026-11-05
 
 ### Added

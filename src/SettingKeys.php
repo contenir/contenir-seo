@@ -41,6 +41,12 @@ final class SettingKeys
      */
     public const string VISIBILITY = 'extensions.seo.visibility';
 
+    /**
+     * The master switch for what the site's <seo> blocks drive: page defaults, per-record overrides, the main
+     * JSON-LD node, breadcrumb names and sitemap images. Off unless a site turns it on.
+     */
+    public const string RECORDS = 'extensions.seo.records';
+
     public const string VERIFY_GOOGLE = 'google.site_verification';
 
     public const string VERIFY_BING = 'extensions.seo.verify_bing';

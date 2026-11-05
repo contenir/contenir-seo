@@ -10,6 +10,7 @@ use Contenir\Seo\SettingKeys;
 use Contenir\Seo\Tests\TestAsset\Factory\SettingsFactory;
 use Contenir\Seo\Title\TitlePosition;
 use Contenir\Seo\Visibility\Visibility;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -17,6 +18,29 @@ use PHPUnit\Framework\TestCase;
 #[Group('unit')]
 final class SeoConfigTest extends TestCase
 {
+    /**
+     * @return array<string, array{string|bool, bool, bool}>
+     */
+    public static function recordsSettingProvider(): array
+    {
+        return [
+            'on as 1'                   => ['1', false, true],
+            'on as true'                => [true, false, true],
+            'off as 0'                  => ['0', true, false],
+            'off as empty string'       => ['', true, false],
+            'unreadable falls back on'  => ['maybe', true, true],
+            'unreadable falls back off' => ['maybe', false, false],
+        ];
+    }
+
+    #[Test]
+    public function aSizedConfigKeepsTheRecordsSwitch(): void
+    {
+        $config = SeoConfig::fromSettings(SettingsFactory::site([SettingKeys::RECORDS => '1']));
+
+        static::assertTrue($config->withShareImage(null)->records);
+    }
+
     #[Test]
     public function fallsBackToDefaultsForASiteWithNoSeoSettings(): void
     {
@@ -245,6 +269,15 @@ final class SeoConfigTest extends TestCase
     }
 
     #[Test]
+    #[DataProvider('recordsSettingProvider')]
+    public function readsTheRecordsSwitchFromTheSettings(string|bool $stored, bool $fallback, bool $expected): void
+    {
+        $config = SeoConfig::fromSettings(SettingsFactory::site([SettingKeys::RECORDS => $stored]), $fallback);
+
+        static::assertSame($expected, $config->records);
+    }
+
+    #[Test]
     public function swapsTheShareImageAndKeepsTheRest(): void
     {
         $config = SeoConfig::fromSettings(SettingsFactory::site([
@@ -285,6 +318,31 @@ final class SeoConfigTest extends TestCase
                 $sized->sitemap,
                 $sized->robotsRules,
                 $sized->problems,
+            ],
+        );
+    }
+
+    #[Test]
+    public function theRecordsSwitchFallsBackWhenTheSettingsDoNotHaveIt(): void
+    {
+        static::assertSame(
+            [true, true],
+            [
+                SeoConfig::fromSettings(SettingsFactory::site(), records: true)->records,
+                SeoConfig::fromCoreSettings(SettingsFactory::site(), records: true)->records,
+            ],
+        );
+    }
+
+    #[Test]
+    public function theRecordsSwitchIsOffByDefault(): void
+    {
+        static::assertSame(
+            [false, false, false],
+            [
+                (new SeoConfig())->records,
+                SeoConfig::fromSettings(SettingsFactory::site())->records,
+                SeoConfig::fromCoreSettings(SettingsFactory::site())->records,
             ],
         );
     }

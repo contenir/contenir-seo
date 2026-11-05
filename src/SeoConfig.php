@@ -32,6 +32,7 @@ final readonly class SeoConfig
     /**
      * @param array<value-of<Verifier>, string> $verification Tokens, by service
      * @param array<string, string>             $problems     What was wrong with each stored value left out, by setting key
+     * @param bool                              $records      Whether what the site's <seo> blocks drive is switched on
      *
      * @mago-expect lint:excessive-parameter-list One parameter per part of the settings; all are optional.
      */
@@ -47,6 +48,7 @@ final readonly class SeoConfig
         public SitemapSettings $sitemap = new SitemapSettings(),
         public RobotsRules $robotsRules = new RobotsRules(),
         public array $problems = [],
+        public bool $records = false,
     ) {}
 
     /**
@@ -55,8 +57,9 @@ final readonly class SeoConfig
      * today's sitemap and robots.txt and nothing is hidden.
      *
      * @param array<array-key, mixed> $settings
+     * @param bool                    $records  Whether the blocks drive output, where the site's configuration says so
      */
-    public static function fromCoreSettings(array $settings): self
+    public static function fromCoreSettings(array $settings, bool $records = false): self
     {
         $values = new SettingsArray($settings);
 
@@ -64,6 +67,7 @@ final readonly class SeoConfig
             site: new SiteUrl($values->text(SettingKeys::SITE_URL)),
             title: new TitleTemplate(trim($values->text(SettingKeys::SITE_TITLE)), position: TitlePosition::None),
             sitemap: new SitemapSettings($values->flag(SettingKeys::SITEMAP_ENABLED, default: true)),
+            records: $records,
         );
     }
 
@@ -71,11 +75,14 @@ final readonly class SeoConfig
      * Reads the SEO values from a site's settings, as nested arrays
      * (['extensions' => ['seo' => ['site_name' => '…']]]). A verification
      * token or robots.txt rule that isn't valid is left out and its problem
-     * kept.
+     * kept. The master switch for what the <seo> blocks drive is
+     * extensions.seo.records, which is $records when the settings don't have
+     * it, and off unless the site turns it on.
      *
      * @param array<array-key, mixed> $settings
+     * @param bool                    $records  The switch where the settings have no value for it
      */
-    public static function fromSettings(array $settings): self
+    public static function fromSettings(array $settings, bool $records = false): self
     {
         $values   = new SettingsArray($settings);
         $site     = new SiteUrl($values->text(SettingKeys::SITE_URL));
@@ -131,6 +138,7 @@ final readonly class SeoConfig
             ),
             robotsRules: RobotsRules::parse($rules),
             problems: $problems,
+            records: $values->flag(SettingKeys::RECORDS, $records),
         );
     }
 
@@ -160,6 +168,7 @@ final readonly class SeoConfig
             $this->sitemap,
             $this->robotsRules,
             $this->problems,
+            $this->records,
         );
     }
 }
