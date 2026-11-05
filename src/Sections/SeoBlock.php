@@ -16,7 +16,8 @@ use function trim;
  * type of its pages, and the columns each SEO role reads, first non-empty
  * value winning. A role the block leaves out takes the conventions most
  * sites follow: meta_title then title, meta_description then description,
- * and the title as the image's alt text.
+ * and the title as the image's alt text. A role can also read a linked
+ * record's column, see {@see LinkedValue}.
  *
  * @api
  */
@@ -54,6 +55,19 @@ final readonly class SeoBlock
             ...(null === $this->advanced ? [] : [$this->advanced]),
             ...array_merge(...array_values($this->roles)),
         ]));
+    }
+
+    /**
+     * The values the block reads from linked records, by how it names each.
+     *
+     * The site puts each one's value in the row {@see self::page()} is given,
+     * under that same name.
+     *
+     * @return array<string, LinkedValue>
+     */
+    public function linked(): array
+    {
+        return LinkedValue::among($this->columns());
     }
 
     /**
