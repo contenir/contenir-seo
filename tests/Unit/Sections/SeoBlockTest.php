@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Contenir\Seo\Tests\Unit\Sections;
 
+use Contenir\Seo\Sections\LinkedValue;
 use Contenir\Seo\Sections\MappedPage;
 use Contenir\Seo\Sections\RecordOverrides;
 use Contenir\Seo\Sections\SeoBlock;
@@ -14,6 +15,31 @@ use PHPUnit\Framework\TestCase;
 #[Group('unit')]
 final class SeoBlockTest extends TestCase
 {
+    #[Test]
+    public function aBlockListsTheValuesItReadsFromLinkedRecordsByTheirNames(): void
+    {
+        $block = new SeoBlock('page', roles: [
+            'image'     => ['assets[type=hero].path', 'image_lg'],
+            'image@alt' => ['hero.alt'],
+        ]);
+
+        static::assertEquals(
+            [
+                'assets[type=hero].path' => new LinkedValue('assets', 'path', 'type', 'hero'),
+                'hero.alt'               => new LinkedValue('hero', 'alt'),
+            ],
+            $block->linked(),
+        );
+    }
+
+    #[Test]
+    public function aBlockReadsALinkedValueFromTheRowUnderItsName(): void
+    {
+        $block = new SeoBlock('page', roles: ['image' => ['assets.path']]);
+
+        static::assertSame('/a.jpg', $block->page(['assets.path' => '/a.jpg'])->image);
+    }
+
     #[Test]
     public function aBlockReadsItsAdvancedColumnFirstAndEachColumnOnce(): void
     {

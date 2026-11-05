@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- A `<seo>` block can read a value from a linked record, as `hero.path`, or `assets[type=hero].path` for the first
+  whose `type` column is `hero`. `Sections\LinkedValue` parses these, and `SeoBlock::linked()` lists a block's for the
+  site to fill in.
+
 ## [0.7.0] - 2026-11-05
 
 ### Added
