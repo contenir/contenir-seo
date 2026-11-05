@@ -32,20 +32,6 @@ final readonly class LinkedValue
     ) {}
 
     /**
-     * What $source links to, or null when it isn't a link, as a column's name isn't.
-     */
-    public static function parse(string $source): ?self
-    {
-        $parts = [];
-        if (1 !== preg_match(self::PATTERN, $source, $parts, PREG_UNMATCHED_AS_NULL)) {
-            return null;
-        }
-
-        /** @var array{string, string, ?string, ?string, string} $parts */
-        return new self($parts[1], $parts[4], $parts[2], $parts[3]);
-    }
-
-    /**
      * The links among $sources, by how each is written.
      *
      * @param list<string> $sources
@@ -73,6 +59,20 @@ final readonly class LinkedValue
     public static function any(array $sources): bool
     {
         return [] !== self::among($sources);
+    }
+
+    /**
+     * What $source links to, or null when it isn't a link, as a column's name isn't.
+     */
+    public static function parse(string $source): ?self
+    {
+        $parts = [];
+        if (1 !== preg_match(self::PATTERN, $source, $parts, PREG_UNMATCHED_AS_NULL)) {
+            return null;
+        }
+
+        /** @var array{string, string, ?string, ?string, string} $parts */
+        return new self($parts[1], $parts[4], $parts[2], $parts[3]);
     }
 
     /**

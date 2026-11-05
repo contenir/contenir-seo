@@ -16,18 +16,12 @@ use PHPUnit\Framework\TestCase;
 final class SeoBlockTest extends TestCase
 {
     #[Test]
-    public function aBlockReadsItsAdvancedColumnFirstAndEachColumnOnce(): void
-    {
-        static::assertSame(
-            ['seo', 'meta_title', 'title', 'meta_description', 'description'],
-            (new SeoBlock('page', advanced: 'seo'))->columns(),
-        );
-    }
-
-    #[Test]
     public function aBlockListsTheValuesItReadsFromLinkedRecordsByTheirNames(): void
     {
-        $block = new SeoBlock('page', roles: ['image' => ['assets[type=hero].path', 'image_lg'], 'image@alt' => ['hero.alt']]);
+        $block = new SeoBlock('page', roles: [
+            'image'     => ['assets[type=hero].path', 'image_lg'],
+            'image@alt' => ['hero.alt'],
+        ]);
 
         static::assertEquals(
             [
@@ -44,6 +38,15 @@ final class SeoBlockTest extends TestCase
         $block = new SeoBlock('page', roles: ['image' => ['assets.path']]);
 
         static::assertSame('/a.jpg', $block->page(['assets.path' => '/a.jpg'])->image);
+    }
+
+    #[Test]
+    public function aBlockReadsItsAdvancedColumnFirstAndEachColumnOnce(): void
+    {
+        static::assertSame(
+            ['seo', 'meta_title', 'title', 'meta_description', 'description'],
+            (new SeoBlock('page', advanced: 'seo'))->columns(),
+        );
     }
 
     #[Test]
