@@ -6,6 +6,7 @@ namespace Contenir\Seo\Sections;
 
 use DOMElement;
 
+use function array_diff;
 use function array_filter;
 use function array_map;
 use function array_values;
@@ -16,7 +17,9 @@ use function trim;
  * Reads a <seo> element into its block: each child names a role and lists
  * the columns it reads, separated by commas; an alt attribute lists the
  * columns for the role's alt text, required="true" marks a role a record
- * must fill, and <advanced> names the column holding a record's overrides.
+ * must fill, and <advanced> names the column holding a record's overrides. mode="manual" on <seo>
+ * stops a page taking a description or image from the record's Section field, and content="false" on a role
+ * stops that role alone taking it.
  *
  * @api
  */
@@ -35,6 +38,7 @@ final class SeoBlockReader
         $roles    = SeoBlock::CONVENTIONS;
         $required = [];
         $advanced = null;
+        $content  = SeoBlock::CONTENT_ROLES;
         foreach ($seo->childNodes as $child) {
             if (! $child instanceof DOMElement) {
                 continue;
@@ -55,11 +59,23 @@ final class SeoBlockReader
             if ('true' === $child->getAttribute('required')) {
                 $required[] = $role;
             }
+
+            if ('false' === $child->getAttribute('content')) {
+                $content = array_diff($content, [$role]);
+            }
         }
 
         $schema = trim($seo->getAttribute('schema'));
 
-        return new SeoBlock($type, '' === $schema ? null : $schema, $roles, $required, $advanced);
+        return new SeoBlock(
+            $type,
+            '' === $schema ? null : $schema,
+            $roles,
+            $required,
+            $advanced,
+            'manual' !== trim($seo->getAttribute('mode')),
+            array_values($content),
+        );
     }
 
     /**

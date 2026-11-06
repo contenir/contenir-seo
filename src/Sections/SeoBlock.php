@@ -17,7 +17,10 @@ use function trim;
  * value winning. A role the block leaves out takes the conventions most
  * sites follow: meta_title then title, meta_description then description,
  * and the title as the image's alt text. A role can also read a linked
- * record's column, see {@see LinkedValue}.
+ * record's column, see {@see LinkedValue}. Where a record's columns give no
+ * description or image, its Section field does, see {@see ContentBlocks}.
+ *
+ * @mago-expect lint:cyclomatic-complexity Each role is read and checked on its own, a branch apiece.
  *
  * @api
  */
@@ -31,10 +34,18 @@ final readonly class SeoBlock
         'image@alt'   => ['title'],
     ];
 
+    /** The roles a record's Section field can fill. */
+    public const array CONTENT_ROLES = ['description', 'image'];
+
     /**
+     * @mago-expect lint:excessive-parameter-list One parameter for each part of a <seo> block.
+     *
      * @param array<string, list<string>> $roles    The columns each role reads, by role
      * @param list<string>                $required The roles a record must fill
      * @param string|null                 $advanced The column holding a record's overrides as JSON
+     * @param bool                        $automatic Whether a page takes what a record's Section field gives where its
+     *                                               columns give nothing; where it doesn't, that is only a suggestion
+     * @param list<string>                $content  The roles that may take it
      */
     public function __construct(
         public string $type,
@@ -42,6 +53,8 @@ final readonly class SeoBlock
         public array $roles = self::CONVENTIONS,
         public array $required = [],
         public ?string $advanced = null,
+        public bool $automatic = true,
+        public array $content = self::CONTENT_ROLES,
     ) {}
 
     /**
@@ -78,11 +91,14 @@ final readonly class SeoBlock
     public function page(array $row): MappedPage
     {
         $advanced = Overrides::from(null === $this->advanced ? null : $row[$this->advanced] ?? null);
+        $content  = ContentBlocks::of($row[ContentBlocks::COLUMN] ?? null);
 
         return new MappedPage(
             title: $this->first('title', $row),
-            description: $this->first('description', $row),
-            image: $this->first('image', $row),
+            description: $this->first('description', $row)
+                ?? ($this->takesContent('description') ? $content->description() : null),
+            image: $this->first('image', $row)
+                ?? ($this->takesContent('image') ? ContentBlocks::imagePath($row) : null),
             imageAlt: $this->first('image@alt', $row),
             canonical: $advanced['canonical'] ?? null,
             robots: $advanced['robots'] ?? null,
@@ -102,6 +118,14 @@ final readonly class SeoBlock
     public function requires(string $role): bool
     {
         return in_array($role, $this->required, strict: true);
+    }
+
+    /**
+     * Whether a page takes $role from the record's Section field where its columns give nothing.
+     */
+    public function takesContent(string $role): bool
+    {
+        return $this->automatic && in_array($role, $this->content, strict: true);
     }
 
     /**

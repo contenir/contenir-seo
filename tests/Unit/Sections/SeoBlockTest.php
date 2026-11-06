@@ -8,13 +8,29 @@ use Contenir\Seo\Sections\LinkedValue;
 use Contenir\Seo\Sections\MappedPage;
 use Contenir\Seo\Sections\RecordOverrides;
 use Contenir\Seo\Sections\SeoBlock;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+use function json_encode;
+
 #[Group('unit')]
 final class SeoBlockTest extends TestCase
 {
+    /**
+     * @return array<string, array{SeoBlock, ?string}>
+     */
+    public static function contentProvider(): array
+    {
+        return [
+            'automatic takes it'            => [new SeoBlock('page'), '<p>About us</p>'],
+            'manual does not'               => [new SeoBlock('page', automatic: false), null],
+            'a block leaving the role out'  => [new SeoBlock('page', content: ['image']), null],
+            'a block leaving the other out' => [new SeoBlock('page', content: ['description']), '<p>About us</p>'],
+        ];
+    }
+
     #[Test]
     public function aBlockListsTheValuesItReadsFromLinkedRecordsByTheirNames(): void
     {
@@ -56,9 +72,33 @@ final class SeoBlockTest extends TestCase
     }
 
     #[Test]
+    public function aManualBlockTakesContentForNoRole(): void
+    {
+        static::assertFalse((new SeoBlock('page', automatic: false))->takesContent('description'));
+    }
+
+    #[Test]
     public function aNumberReadsAsText(): void
     {
         static::assertSame('2024', (new SeoBlock('award'))->page(['title' => 2024])->title);
+    }
+
+    #[Test]
+    #[DataProvider('contentProvider')]
+    public function aPageTakesADescriptionFromTheSectionFieldOnlyWhereTheBlockLetsIt(
+        SeoBlock $block,
+        ?string $expected,
+    ): void {
+        $page = $block->page([
+            'section' => json_encode([[
+                'id'     => '',
+                'type'   => 'text',
+                'status' => '1',
+                'fields' => ['description' => '<p>About us</p>'],
+            ]]),
+        ]);
+
+        static::assertSame($expected, $page->description);
     }
 
     #[Test]
@@ -127,6 +167,14 @@ final class SeoBlockTest extends TestCase
         $block = new SeoBlock('project', required: ['description']);
 
         static::assertSame([true, false], [$block->requires('description'), $block->requires('title')]);
+    }
+
+    #[Test]
+    public function saysWhetherARoleTakesContent(): void
+    {
+        $block = new SeoBlock('page', content: ['image']);
+
+        static::assertSame([false, true], [$block->takesContent('description'), $block->takesContent('image')]);
     }
 
     #[Test]
