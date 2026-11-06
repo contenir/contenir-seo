@@ -17,7 +17,10 @@ use function trim;
  * value winning. A role the block leaves out takes the conventions most
  * sites follow: meta_title then title, meta_description then description,
  * and the title as the image's alt text. A role can also read a linked
- * record's column, see {@see LinkedValue}.
+ * record's column, see {@see LinkedValue}. Where a record's columns give no
+ * description or image, its Section field does, see {@see ContentBlocks}.
+ *
+ * @mago-expect lint:cyclomatic-complexity Each role is read and checked on its own, a branch apiece.
  *
  * @api
  */
@@ -78,11 +81,12 @@ final readonly class SeoBlock
     public function page(array $row): MappedPage
     {
         $advanced = Overrides::from(null === $this->advanced ? null : $row[$this->advanced] ?? null);
+        $content  = ContentBlocks::of($row[ContentBlocks::COLUMN] ?? null);
 
         return new MappedPage(
             title: $this->first('title', $row),
-            description: $this->first('description', $row),
-            image: $this->first('image', $row),
+            description: $this->first('description', $row) ?? $content->description(),
+            image: $this->first('image', $row) ?? ContentBlocks::imagePath($row),
             imageAlt: $this->first('image@alt', $row),
             canonical: $advanced['canonical'] ?? null,
             robots: $advanced['robots'] ?? null,

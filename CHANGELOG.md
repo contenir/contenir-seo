@@ -4,6 +4,15 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.9.0] - 2026-11-06
+
+### Added
+
+- `ContentBlocks`, what a record's Section field gives a page where its own columns give nothing: a description from
+  the first text block that has words, and the images of the first media or carousel block. A block switched off is left
+  out. A `<seo>` block uses it for a record's description and, through the key `@content.image`, its image, after the
+  columns the block names.
+
 ## [0.8.0] - 2026-11-06
 
 ### Added
