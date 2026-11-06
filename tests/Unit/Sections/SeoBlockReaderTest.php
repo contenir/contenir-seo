@@ -61,6 +61,12 @@ final class SeoBlockReaderTest extends TestCase
     }
 
     #[Test]
+    public function aModeWithSpacesAroundItStillReads(): void
+    {
+        static::assertFalse(self::read('<seo type="page" mode=" manual "/>')?->automatic);
+    }
+
+    #[Test]
     public function aRoleThatSaysContentIsFalseTakesNoneFromTheSectionField(): void
     {
         $block = self::read('<seo type="page"><description content="false">description</description></seo>');
