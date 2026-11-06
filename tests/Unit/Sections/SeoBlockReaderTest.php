@@ -36,6 +36,19 @@ final class SeoBlockReaderTest extends TestCase
     }
 
     #[Test]
+    public function aBlockIsAutomaticUnlessItsModeIsManual(): void
+    {
+        static::assertSame(
+            [true, false, true],
+            [
+                self::read('<seo type="page"/>')?->automatic,
+                self::read('<seo type="page" mode="manual"/>')?->automatic,
+                self::read('<seo type="page" mode="automatic"/>')?->automatic,
+            ],
+        );
+    }
+
+    #[Test]
     public function aBlockThatNamesNoRolesTakesTheConventions(): void
     {
         static::assertEquals(new SeoBlock('page'), self::read('<seo type="page"/>'));
@@ -45,6 +58,14 @@ final class SeoBlockReaderTest extends TestCase
     public function aBlockWithoutATypeIsNone(): void
     {
         static::assertSame([null, null], [self::read('<seo/>'), self::read('<seo type=" "/>')]);
+    }
+
+    #[Test]
+    public function aRoleThatSaysContentIsFalseTakesNoneFromTheSectionField(): void
+    {
+        $block = self::read('<seo type="page"><description content="false">description</description></seo>');
+
+        static::assertSame(['image'], $block?->content);
     }
 
     #[Test]
