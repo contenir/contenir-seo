@@ -6,6 +6,8 @@ adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-11-16
+
 ### Fixed
 
 - A page held two `twitter:card` tags when the site had a default share image and the page had none of its own: the
