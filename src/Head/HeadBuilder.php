@@ -52,8 +52,15 @@ final readonly class HeadBuilder
             $tags[] = MetaTag::name('twitter:description', $config->description);
         }
 
-        if (! $page->hasImage && null !== $config->shareImage) {
-            $tags = [...$tags, ...$config->shareImage->tags()];
+        if (! $page->hasImage) {
+            $tags = [
+                ...$tags,
+                ...(
+                    null === $config->shareImage
+                        ? [MetaTag::name('twitter:card', 'summary')]
+                        : $config->shareImage->tags()
+                ),
+            ];
         }
 
         return new Head(

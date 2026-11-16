@@ -4,6 +4,16 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- A page held two `twitter:card` tags when the site had a default share image and the page had none of its own: the
+  page's tags wrote `summary` and the head wrote `summary_large_image` with the default image. The head now writes the
+  card for every page without an image of its own, `summary_large_image` with the default image and `summary` without
+  one, and `contenir-resource` 2.0.0-RC9 no longer writes one for a page without an image. A page with an image has the
+  card from its own tags, as before.
+
 ## [0.9.0] - 2026-11-06
 
 ### Added

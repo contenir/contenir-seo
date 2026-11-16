@@ -16,7 +16,10 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function array_column;
+use function array_filter;
 use function array_map;
+use function array_values;
+use function str_starts_with;
 
 #[Group('unit')]
 final class HeadBuilderTest extends TestCase
@@ -71,7 +74,10 @@ final class HeadBuilderTest extends TestCase
             new PageContext(host: 'www.example.com'),
         );
 
-        static::assertSame(['property og:site_name=Example', 'name robots=index, nofollow'], self::lines($head->tags));
+        static::assertSame(
+            ['property og:site_name=Example', 'name robots=index, nofollow', 'name twitter:card=summary'],
+            self::lines($head->tags),
+        );
     }
 
     #[Test]
@@ -92,10 +98,11 @@ final class HeadBuilderTest extends TestCase
                     'property og:site_name=Example',
                     'name google-site-verification=google-token',
                     'name facebook-domain-verification=meta-token',
+                    'name twitter:card=summary',
                 ],
                 'Example: handmade furniture',
                 'https://www.example.com/#website',
-                ['property og:site_name=Example'],
+                ['property og:site_name=Example', 'name twitter:card=summary'],
                 'Home | Example',
                 [],
             ],
@@ -162,7 +169,7 @@ final class HeadBuilderTest extends TestCase
         $head = self::builder()->build(new PageContext('About', host: 'staging.example.com'));
 
         static::assertSame(
-            [true, ['property og:site_name=Example', 'name robots=noindex, nofollow']],
+            [true, ['property og:site_name=Example', 'name robots=noindex, nofollow', 'name twitter:card=summary']],
             [$head->hidden, self::lines($head->tags)],
         );
     }
@@ -205,10 +212,53 @@ final class HeadBuilderTest extends TestCase
     }
 
     #[Test]
+    public function writesASummaryCardForAPageWithNoImageAndASiteWithNone(): void
+    {
+        $head = self::builder()->build(new PageContext('About', host: 'www.example.com'));
+
+        static::assertContains('name twitter:card=summary', self::lines($head->tags));
+    }
+
+    #[Test]
+    public function writesNoCardForAPageWithItsOwnImageAsThePageWritesIt(): void
+    {
+        $head = self::builder([SettingKeys::SHARE_IMAGE => '/share.jpg'])->build(
+            new PageContext('About', host: 'www.example.com', hasImage: true),
+        );
+
+        static::assertSame(
+            [],
+            array_values(array_filter(
+                self::lines($head->tags),
+                static fn(string $line): bool => str_starts_with($line, 'name twitter:card='),
+            )),
+        );
+    }
+
+    #[Test]
     public function writesNoSiteNameForASiteWithout(): void
     {
         $head = (new HeadBuilder(new SeoConfig()))->build(new PageContext('About'));
 
-        static::assertSame(['About', [], false], [$head->title, $head->tags, $head->hidden]);
+        static::assertSame(
+            ['About', ['name twitter:card=summary'], false],
+            [$head->title, self::lines($head->tags), $head->hidden],
+        );
+    }
+
+    #[Test]
+    public function writesOneLargeCardForAPageWithNoImageOnASiteWithADefaultOne(): void
+    {
+        $head = self::builder([SettingKeys::SHARE_IMAGE => '/share.jpg'])->build(
+            new PageContext('About', host: 'www.example.com'),
+        );
+
+        static::assertSame(
+            ['name twitter:card=summary_large_image'],
+            array_values(array_filter(
+                self::lines($head->tags),
+                static fn(string $line): bool => str_starts_with($line, 'name twitter:card='),
+            )),
+        );
     }
 }
