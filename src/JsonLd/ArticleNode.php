@@ -16,7 +16,8 @@ use const DATE_ATOM;
  * Article, NewsArticle or BlogPosting is described by its headline and the
  * dates it was published and modified; any other type, such as WebPage or
  * CreativeWork, by its name, the dates it was created and modified, and the
- * site it is part of. The site's owner publishes either.
+ * site it is part of. Either has its author, a Person, when it names one, and
+ * the site's owner publishes either.
  */
 final class ArticleNode
 {
@@ -40,6 +41,8 @@ final class ArticleNode
             'logo'  => $organisation->logo,
         ]);
 
+        $author = null === $article->author ? null : ['@type' => 'Person', 'name' => $article->author];
+
         if (in_array($article->type, self::ARTICLES, strict: true)) {
             return Node::of([
                 '@type'         => $article->type,
@@ -49,6 +52,7 @@ final class ArticleNode
                 'image'         => $article->image,
                 'datePublished' => $article->published?->format(DATE_ATOM),
                 'dateModified'  => $article->modified?->format(DATE_ATOM),
+                'author'        => $author,
                 'publisher'     => $publisher,
             ]);
         }
@@ -62,6 +66,7 @@ final class ArticleNode
             'dateCreated'  => $article->published?->format(DATE_ATOM),
             'dateModified' => $article->modified?->format(DATE_ATOM),
             'isPartOf'     => ['@id' => "{$home}#website"],
+            'author'       => $author,
             'publisher'    => $publisher,
         ]);
     }

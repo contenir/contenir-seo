@@ -106,7 +106,7 @@ echo $graph->script($nonce);
 | `description`, `og:description`, `twitter:description` | the page has no description of its own |
 | `og:image`, `og:image:width`, `og:image:height`, `og:image:alt`, `twitter:card` (`summary_large_image`), `twitter:image`, `twitter:image:alt` | the page has no image of its own; the size when the site measured it (`SeoConfig::withShareImage()`) |
 | JSON-LD for the business and the WebSite | on the home page, when the site URL is set |
-| JSON-LD Article | another page that is an article (`article`), when the site URL is set |
+| JSON-LD Article | another page that is an article (`article`), when the site URL is set; with its `author`, a Person, when the `Article` names one |
 | JSON-LD BreadcrumbList | another page with a path, when the site URL is set: a step for each segment, named from it ("our-work" is "Our work"), the last from the page's title |
 
 Every value is plain text, and `HtmlRenderer` escapes it. The JSON-LD can't close its own script element: `<`, `>`,
