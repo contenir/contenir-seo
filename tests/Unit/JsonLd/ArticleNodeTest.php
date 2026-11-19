@@ -14,6 +14,8 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+use function array_keys;
+
 #[Group('unit')]
 final class ArticleNodeTest extends TestCase
 {
@@ -25,6 +27,14 @@ final class ArticleNodeTest extends TestCase
     public static function articleTypeProvider(): array
     {
         return ['article' => ['Article'], 'news' => ['NewsArticle'], 'blog' => ['BlogPosting']];
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function authoredTypeProvider(): array
+    {
+        return ['an article' => ['Article'], 'any other type' => ['CreativeWork']];
     }
 
     #[Test]
@@ -139,6 +149,36 @@ final class ArticleNodeTest extends TestCase
                 self::HOME,
                 'Example',
             ),
+        );
+    }
+
+    #[Test]
+    #[DataProvider('authoredTypeProvider')]
+    public function namesTheAuthorAsAPerson(string $type): void
+    {
+        static::assertSame(
+            ['@type' => 'Person', 'name' => 'Jo Roca'],
+            ArticleNode::of(
+                new Article(self::HOME, 'Jo Roca', type: $type, author: 'Jo Roca'),
+                new Organisation(),
+                self::HOME,
+                'Example',
+            )['author']
+                ?? null,
+        );
+    }
+
+    #[Test]
+    public function writesTheAuthorBeforeThePublisher(): void
+    {
+        static::assertSame(
+            ['@type', 'headline', 'url', 'author', 'publisher'],
+            array_keys(ArticleNode::of(
+                new Article(self::HOME, 'Jo Roca', author: 'Jo Roca'),
+                new Organisation(),
+                self::HOME,
+                'Example',
+            )),
         );
     }
 }

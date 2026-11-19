@@ -6,6 +6,13 @@ adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-11-20
+
+### Added
+
+- `Article::$author`, who wrote the page, by name. Its JSON-LD node, of any type, has an `author`, a `Person` with
+  that name, before its `publisher`. An article without one has no `author`, as before.
+
 ## [0.9.1] - 2026-11-16
 
 ### Fixed

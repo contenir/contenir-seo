@@ -17,6 +17,7 @@ final readonly class Article
      * @param string $url      The page's canonical address
      * @param string $headline The page's own title
      * @param string $type     The page's schema.org type: Article, NewsArticle or BlogPosting, or another such as WebPage or CreativeWork
+     * @param ?string $author  Who wrote it, by name: a Person
      *
      * @mago-expect lint:excessive-parameter-list One parameter per property the article's JSON-LD takes.
      */
@@ -28,5 +29,6 @@ final readonly class Article
         public ?DateTimeInterface $published = null,
         public ?DateTimeInterface $modified = null,
         public string $type = 'Article',
+        public ?string $author = null,
     ) {}
 }
