@@ -6,6 +6,13 @@ adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-11-20
+
+### Added
+
+- `Article::$authorUrl` and `$authorProfiles`: the author's own page, such as their website, and their other profiles,
+  such as Instagram. The author's `Person` has them as its `url` and `sameAs`, when it has a name.
+
 ## [0.10.0] - 2026-11-20
 
 ### Added

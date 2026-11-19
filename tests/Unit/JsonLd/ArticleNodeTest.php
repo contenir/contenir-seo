@@ -129,6 +129,51 @@ final class ArticleNodeTest extends TestCase
     }
 
     #[Test]
+    public function givesNoAuthorLinksWithoutAnAuthor(): void
+    {
+        static::assertArrayNotHasKey(
+            'author',
+            ArticleNode::of(
+                new Article(
+                    self::HOME,
+                    'A story',
+                    authorUrl: 'https://joroca.com',
+                    authorProfiles: ['https://x.com/jo'],
+                ),
+                new Organisation(),
+                self::HOME,
+                'Example',
+            ),
+        );
+    }
+
+    #[Test]
+    public function givesTheAuthorTheirOwnPageAndProfiles(): void
+    {
+        static::assertSame(
+            [
+                '@type'  => 'Person',
+                'name'   => 'Jo Roca',
+                'url'    => 'https://joroca.com',
+                'sameAs' => ['https://www.instagram.com/joroca', 'https://twitter.com/joroca'],
+            ],
+            ArticleNode::of(
+                new Article(
+                    self::HOME,
+                    'Jo Roca',
+                    author: 'Jo Roca',
+                    authorUrl: 'https://joroca.com',
+                    authorProfiles: ['https://www.instagram.com/joroca', 'https://twitter.com/joroca'],
+                ),
+                new Organisation(),
+                self::HOME,
+                'Example',
+            )['author']
+                ?? null,
+        );
+    }
+
+    #[Test]
     public function leavesOutWhatTheArticleLacksAndNamesThePublisherAfterTheSite(): void
     {
         static::assertSame(
